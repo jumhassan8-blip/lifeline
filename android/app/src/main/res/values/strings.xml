@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Lifeline</string>
+    <string name="title_activity_main">Lifeline</string>
+    <string name="package_name">com.lifeline.app</string>
+    <string name="custom_url_scheme">com.lifeline.app</string>
+</resources>

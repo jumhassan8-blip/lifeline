@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lifeline — help for everyone, in 104 languages</title>
+<meta name="description" content="Free offline-first help: SOS, translation, health, food &amp; water maps, and camera learning. Works in 104 languages. Free with ads, or premium ad-free.">
+<meta name="theme-color" content="#f6f6f7">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='9' fill='none' stroke='%2317171a' stroke-width='2'/%3E%3Ccircle cx='12' cy='12' r='3.5' fill='%2317171a'/%3E%3Cline x1='12' y1='1' x2='12' y2='5' stroke='%2317171a' stroke-width='2'/%3E%3Cline x1='12' y1='19' x2='12' y2='23' stroke='%2317171a' stroke-width='2'/%3E%3Cline x1='1' y1='12' x2='5' y2='12' stroke='%2317171a' stroke-width='2'/%3E%3Cline x1='19' y1='12' x2='23' y2='12' stroke='%2317171a' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+:root{
+  --kimi-color-text-primary:#17171a;
+  --kimi-color-text-secondary:rgba(23,23,26,.68);
+  --kimi-color-text-tertiary:rgba(23,23,26,.45);
+  --kimi-color-text-quaternary:rgba(23,23,26,.28);
+  --kimi-color-surface:#ffffff;
+  --kimi-color-surface-muted:#f6f6f7;
+  --kimi-color-surface-raised:#ffffff;
+  --kimi-color-surface-strong:#ececef;
+  --kimi-color-border:rgba(23,23,26,.1);
+  --kimi-color-danger:#e5484d;
+  --kimi-color-positive:#2f9e63;
+  --kimi-color-warning:#f0a020;
+  --kimi-color-accent:#2f6bff;
+  --t-micro:100ms;
+  --t-fast:150ms;
+  --t-normal:250ms;
+  --ease-standard:cubic-bezier(.2,0,0,1);
+  --kimi-font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:var(--kimi-font-sans);
+  background:var(--kimi-color-surface-strong);
+  color:var(--kimi-color-text-primary);
+  display:flex;align-items:center;justify-content:center;
+}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+button{transition:opacity var(--t-micro) var(--ease-standard)}
+button:active{opacity:.55}
+.lang-item:active,.tab:active{border-color:var(--kimi-color-border)}
+
+/* ---------- phone frame ---------- */
+.phone{
+  position:relative;
+  width:400px;max-width:100%;
+  height:100dvh;max-height:920px;
+  background:var(--kimi-color-surface);
+  border:1px solid var(--kimi-color-border);
+  border-radius:32px;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:0 24px 64px rgba(23,23,26,.14);
+}
+@media (max-width:430px){
+  .phone{width:100%;max-height:none;height:100dvh;border:none;border-radius:0;box-shadow:none}
+}
+@media (min-width:1024px){
+  body{padding:32px}
+  .phone{height:min(880px,calc(100dvh - 64px))}
+}
+
+/* ---------- screens ---------- */
+.screens{flex:1;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.screens::-webkit-scrollbar{display:none}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn var(--t-fast) var(--ease-standard)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ---------- shared ---------- */
+.chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 10px;border-radius:999px;
+  background:var(--kimi-color-surface-muted);
+  border:1px solid var(--kimi-color-border);
+  font-size:11px;font-weight:400;color:var(--kimi-color-text-secondary);
+  white-space:nowrap;
+}
+.chip-black{background:var(--kimi-color-text-primary);color:var(--kimi-color-surface);border-color:var(--kimi-color-text-primary)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--kimi-color-positive);display:inline-block}
+
+/* ---------- home ---------- */
+.page{padding:20px 16px 24px}
+.home-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:16px}
+.home-header h1{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.header-chips{display:flex;gap:6px;align-items:center;flex-shrink:0}
+#premium-chip{display:none}
+#premium-chip.show{display:inline-flex}
+
+/* SOS bar */
+.sos-bar{
+  display:flex;align-items:center;gap:10px;
+  padding:12px;
+  border-radius:16px;
+  background:color-mix(in srgb,var(--kimi-color-danger) 10%,transparent);
+  border:1px solid color-mix(in srgb,var(--kimi-color-danger) 25%,transparent);
+  margin-bottom:16px;
+}
+.sos-bar svg{flex-shrink:0;color:var(--kimi-color-danger)}
+.sos-bar p{flex:1;font-size:13px;font-weight:500;color:var(--kimi-color-text-primary);line-height:1.35}
+.sos-btn{
+  min-height:44px;padding:0 18px;border-radius:12px;
+  background:var(--kimi-color-danger);color:#fff;
+  font-size:15px;font-weight:600;letter-spacing:.06em;flex-shrink:0;
+}
+.sos-panel{display:none;padding:0 2px 2px;margin:-8px 0 16px}
+.sos-panel.open{display:block;animation:fadeIn var(--t-fast) var(--ease-standard)}
+.sos-panel-inner{
+  display:flex;flex-direction:column;gap:8px;
+  padding:12px;border-radius:16px;
+  background:var(--kimi-color-surface);
+  border:1px solid var(--kimi-color-border);
+  box-shadow:0 8px 24px rgba(23,23,26,.08);
+}
+.btn-solid-danger{
+  min-height:44px;border-radius:12px;
+  background:var(--kimi-color-danger);color:#fff;
+  font-size:14px;font-weight:500;
+}
+.btn-outline{
+  min-height:44px;border-radius:12px;
+  border:1.5px solid var(--kimi-color-text-primary);
+  color:var(--kimi-color-text-primary);
+  font-size:14px;font-weight:500;background:var(--kimi-color-surface);
+}
+.sos-confirm{display:none;font-size:12px;font-weight:500;color:var(--kimi-color-positive);line-height:1.4;padding:2px 2px 0}
+.sos-confirm.show{display:block}
+
+/* hold to speak */
+.hold-btn{
+  width:100%;min-height:56px;border-radius:16px;
+  background:var(--kimi-color-text-primary);color:var(--kimi-color-surface);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  font-size:15px;font-weight:500;
+  user-select:none;-webkit-user-select:none;touch-action:manipulation;
+}
+.hold-btn:active{opacity:.85}
+.pulse-dot{width:10px;height:10px;border-radius:50%;background:var(--kimi-color-danger);animation:pulse 1.4s var(--ease-standard) infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--kimi-color-danger) 45%,transparent)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.listening-text{display:none;margin-top:10px;text-align:center;font-size:13px;font-weight:500;color:var(--kimi-color-text-secondary)}
+.listening-text.show{display:block;animation:fadeIn var(--t-fast) var(--ease-standard)}
+.hold-hint{display:block;margin-top:8px;text-align:center;font-size:11px;color:var(--kimi-color-text-tertiary)}
+.hold-hint.hide{display:none}
+
+/* result card */
+.result-card{
+  display:none;margin-top:16px;padding:16px;border-radius:16px;
+  background:var(--kimi-color-surface-muted);
+  border:1px solid var(--kimi-color-border);
+}
+.result-card.show{display:block;animation:fadeIn var(--t-fast) var(--ease-standard)}
+.result-quote{font-size:13px;color:var(--kimi-color-text-tertiary);margin-bottom:6px}
+.result-quote::before{content:"“"}.result-quote::after{content:"”"}
+.result-reply{font-size:14px;font-weight:500;color:var(--kimi-color-text-primary);line-height:1.45;margin-bottom:12px}
+.btn-black{min-height:44px;padding:0 20px;border-radius:12px;background:var(--kimi-color-text-primary);color:var(--kimi-color-surface);font-size:14px;font-weight:500}
+
+/* premium card */
+.premium-card{
+  margin-top:16px;padding:16px;border-radius:16px;
+  border:1px solid var(--kimi-color-border);
+  background:var(--kimi-color-surface);
+}
+.premium-title{font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.seg{display:flex;background:var(--kimi-color-surface-muted);border-radius:12px;padding:3px;margin-bottom:10px}
+.seg button{
+  flex:1;min-height:40px;border-radius:9px;
+  font-size:13px;font-weight:400;color:var(--kimi-color-text-tertiary);
+  transition:background var(--t-fast) var(--ease-standard),color var(--t-fast) var(--ease-standard),font-weight var(--t-fast);
+}
+.seg button.active{background:var(--kimi-color-surface);color:var(--kimi-color-text-primary);font-weight:500;box-shadow:0 1px 4px rgba(23,23,26,.1)}
+.premium-note{font-size:11px;line-height:1.45;color:var(--kimi-color-text-tertiary);margin-bottom:12px}
+#go-premium{width:100%}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.tile{
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+  padding:12px;border-radius:16px;min-height:118px;
+  background:var(--kimi-color-surface);
+  border:1.5px solid var(--kimi-color-border);
+  text-align:left;
+  transition:border-color var(--t-fast) var(--ease-standard),background var(--t-fast) var(--ease-standard);
+}
+.tile.on{border-color:var(--kimi-color-text-primary);background:var(--kimi-color-surface-muted)}
+.badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:999px;letter-spacing:.02em;white-space:nowrap}
+.badge-ads{background:color-mix(in srgb,var(--kimi-color-warning) 16%,transparent);color:color-mix(in srgb,var(--kimi-color-warning) 72%,#000)}
+.badge-premium{background:var(--kimi-color-text-primary);color:var(--kimi-color-surface)}
+.sponsor-line{font-size:11px;line-height:1.45;color:var(--kimi-color-text-quaternary);margin-top:10px}
+.premium .sponsor-line{display:none}
+.tile svg{color:var(--kimi-color-text-primary)}
+.tile-name{font-size:14px;font-weight:500;line-height:1.2}
+.tile-sub{font-size:11px;line-height:1.35;color:var(--kimi-color-text-tertiary)}
+.tile-detail{display:none;margin-top:12px;font-size:12px;line-height:1.5;color:var(--kimi-color-text-secondary)}
+.tile-detail.show{display:block;animation:fadeIn var(--t-fast) var(--ease-standard)}
+.tile-ad{display:none;margin-top:8px;padding:10px 12px;border:1.5px dashed var(--kimi-color-border);border-radius:12px;font-size:11px;line-height:1.45;color:var(--kimi-color-text-quaternary)}
+.tile-ad.show{display:block;animation:fadeIn var(--t-fast) var(--ease-standard)}
+.rewarded{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px;border:1.5px dashed var(--kimi-color-border);border-radius:16px}
+.rewarded p{flex:1;font-size:12px;line-height:1.45;color:var(--kimi-color-text-secondary)}
+.rewarded .btn-black{flex-shrink:0;min-height:40px}
+.rewarded-confirm{display:none;width:100%;margin-top:8px;font-size:12px;font-weight:500;color:var(--kimi-color-positive)}
+.rewarded-confirm.show{display:block}
+.rewarded-wrap{display:block}
+.premium .rewarded-wrap{display:none}
+.b2b-line{margin-top:20px;font-size:11px;line-height:1.5;color:var(--kimi-color-text-quaternary)}
+.ws-header{font-size:17px;font-weight:500;letter-spacing:-.01em;margin-bottom:14px}
+.ws-search{
+  width:100%;min-height:44px;padding:0 14px;border-radius:12px;
+  border:1px solid var(--kimi-color-border);background:var(--kimi-color-surface-muted);
+  font-family:inherit;font-size:14px;color:var(--kimi-color-text-primary);
+  outline:none;margin-bottom:10px;
+}
+.ws-search::placeholder{color:var(--kimi-color-text-quaternary)}
+.ws-search:focus{border-color:var(--kimi-color-text-tertiary)}
+.ws-chips{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.ws-chip{
+  min-height:36px;padding:0 14px;border-radius:999px;
+  background:var(--kimi-color-surface-muted);border:1px solid var(--kimi-color-border);
+  font-size:12px;font-weight:400;color:var(--kimi-color-text-secondary);
+}
+.ws-chip.on{background:var(--kimi-color-text-primary);color:var(--kimi-color-surface);border-color:var(--kimi-color-text-primary);font-weight:500}
+.lib-list{display:flex;flex-direction:column;gap:10px;max-height:44vh;overflow-y:auto;overscroll-behavior:contain;padding-bottom:4px;scrollbar-width:thin}
+.lib-card{
+  display:flex;align-items:center;gap:10px;
+  padding:12px;border-radius:16px;text-align:left;
+  background:var(--kimi-color-surface);border:1px solid var(--kimi-color-border);
+}
+.lib-info{flex:1;min-width:0}
+.lib-title{font-size:14px;font-weight:500;line-height:1.3;margin-bottom:4px}
+.lib-meta{font-size:11px;color:var(--kimi-color-text-tertiary);line-height:1.4}
+.lib-meta .cat-tag{color:var(--kimi-color-text-secondary);font-weight:500}
+.guide-back{
+  min-height:44px;min-width:44px;margin:0 0 12px -8px;
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:13px;font-weight:500;color:var(--kimi-color-text-secondary);
+  border-radius:12px;padding:0 10px;
+}
+.ws-card{padding:16px;border-radius:16px;background:var(--kimi-color-surface);border:1px solid var(--kimi-color-border);margin-bottom:12px}
+.ws-card-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ws-card-head h3{font-size:14px;font-weight:600}
+.ws-title{font-size:14px;font-weight:500;line-height:1.45;margin-bottom:12px}
+.viewfinder{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  min-height:110px;border-radius:12px;
+  background:var(--kimi-color-surface-muted);
+  border:1px solid var(--kimi-color-border);
+  color:var(--kimi-color-text-tertiary);
+  font-size:11px;text-align:center;padding:12px;
+}
+.viewfinder svg{color:var(--kimi-color-text-quaternary)}
+.ws-hint{display:none;margin-top:10px;font-size:12px;line-height:1.45;color:var(--kimi-color-text-secondary);font-style:italic}
+.ws-hint.show{display:block;animation:fadeIn var(--t-fast) var(--ease-standard)}
+.dots{display:flex;gap:8px;margin:12px 0}
+.dot-p{width:8px;height:8px;border-radius:50%;background:var(--kimi-color-surface-strong);border:1px solid var(--kimi-color-border);transition:background var(--t-fast) var(--ease-standard)}
+.dot-p.on{background:var(--kimi-color-text-primary);border-color:var(--kimi-color-text-primary)}
+#ws-btn{width:100%}
+.viewfinder{position:relative;overflow:hidden}
+.vf-video{
+  display:none;position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;border-radius:11px;background:#000;
+}
+.vf-video.live{display:block}
+.shutter-row{display:none;justify-content:center;margin-top:12px}
+.shutter-row.show{display:flex}
+.shutter{
+  width:56px;height:56px;border-radius:50%;
+  border:3px solid var(--kimi-color-text-primary);
+  background:var(--kimi-color-surface);
+  padding:4px;
+}
+.shutter span{display:block;width:100%;height:100%;border-radius:50%;background:var(--kimi-color-text-primary)}
+.ws-thumbs{display:none;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.ws-thumbs.show{display:grid}
+.ws-thumb{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ws-thumb canvas{width:100%;aspect-ratio:4/3;border-radius:8px;border:1px solid var(--kimi-color-border);background:var(--kimi-color-surface-strong);display:block}
+.ws-thumb span{font-size:10px;color:var(--kimi-color-text-tertiary);text-align:center}
+.ws-done{display:none;margin-top:10px;font-size:12px;font-weight:500;color:var(--kimi-color-positive);line-height:1.45}
+.ws-done.show{display:block;animation:fadeIn var(--t-fast) var(--ease-standard)}
+.teach-card{border:1.5px dashed var(--kimi-color-border)}
+.teach-card p{flex:1;font-size:12px;line-height:1.5;color:var(--kimi-color-text-secondary);margin-bottom:12px}
+.ws-bottom{margin-top:12px;font-size:11px;color:var(--kimi-color-text-quaternary)}
+
+/* footer status */
+.status-footer{
+  display:flex;flex-wrap:wrap;gap:6px 14px;
+  margin-top:20px;padding-top:14px;
+  border-top:1px solid var(--kimi-color-border);
+}
+.status-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--kimi-color-text-tertiary)}
+
+/* ---------- map / workshop ---------- */
+.page-title{font-size:20px;font-weight:600;letter-spacing:-.02em;margin-bottom:16px}
+.map-row{
+  display:flex;align-items:center;gap:12px;
+  padding:14px;border-radius:16px;margin-bottom:10px;
+  background:var(--kimi-color-surface);
+  border:1px solid var(--kimi-color-border);
+}
+.map-row svg{flex-shrink:0;color:var(--kimi-color-text-primary)}
+.map-info{flex:1;min-width:0}
+.map-name{font-size:14px;font-weight:500;line-height:1.3}
+.map-meta{font-size:11px;color:var(--kimi-color-text-tertiary);margin-top:2px}
+.map-chip{flex-shrink:0}
+.placeholder{padding:48px 16px;text-align:center;color:var(--kimi-color-text-tertiary);font-size:14px}
+
+/* ---------- tab bar ---------- */
+.tabbar{
+  flex-shrink:0;
+  display:flex;
+  border-top:1px solid var(--kimi-color-border);
+  background:var(--kimi-color-surface);
+  padding:6px 8px max(6px,env(safe-area-inset-bottom));
+}
+.tab{
+  flex:1;min-height:52px;border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  font-size:11px;font-weight:400;color:var(--kimi-color-text-tertiary);
+  transition:color var(--t-fast) var(--ease-standard);
+}
+.tab.active{color:var(--kimi-color-text-primary);font-weight:500}
+
+/* ---------- language sheet ---------- */
+.lang-status{display:none;margin:0 0 12px;font-size:11px;line-height:1.45;color:var(--kimi-color-text-tertiary)}
+.lang-status.show{display:block;animation:fadeIn var(--t-fast) var(--ease-standard)}
+.sheet-overlay{
+  position:absolute;inset:0;z-index:40;
+  background:rgba(23,23,26,.4);
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity var(--t-fast) var(--ease-standard);
+}
+.sheet-overlay.open{opacity:1;pointer-events:auto}
+.sheet{
+  width:100%;max-height:78%;
+  display:flex;flex-direction:column;
+  background:var(--kimi-color-surface);
+  border-radius:20px 20px 0 0;
+  padding:16px 16px max(16px,env(safe-area-inset-bottom));
+  transform:translateY(100%);
+  transition:transform var(--t-normal) var(--ease-standard);
+}
+.sheet-overlay.open .sheet{transform:translateY(0)}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.sheet-head h3{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.sheet-close{
+  min-width:44px;min-height:44px;margin:-10px -10px -10px 0;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--kimi-color-text-secondary);border-radius:12px;
+}
+.lang-search{
+  width:100%;min-height:44px;
+  padding:0 14px;border-radius:12px;
+  border:1px solid var(--kimi-color-border);
+  background:var(--kimi-color-surface-muted);
+  font-family:inherit;font-size:14px;color:var(--kimi-color-text-primary);
+  outline:none;margin-bottom:12px;
+}
+.lang-search::placeholder{color:var(--kimi-color-text-quaternary)}
+.lang-search:focus{border-color:var(--kimi-color-text-tertiary)}
+.lang-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  overflow-y:auto;overscroll-behavior:contain;
+  max-height:52vh;padding-bottom:4px;
+  scrollbar-width:thin;
+}
+.lang-item{
+  min-height:44px;padding:8px 10px;border-radius:12px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:var(--kimi-color-surface-muted);
+  border:1px solid transparent;
+  font-size:13px;font-weight:400;color:var(--kimi-color-text-primary);
+  text-align:left;word-break:break-word;
+}
+.lang-item:active{border-color:var(--kimi-color-border)}
+.lang-item .check{flex-shrink:0;display:none;color:var(--kimi-color-text-primary)}
+.lang-item.sel{background:var(--kimi-color-surface);border-color:var(--kimi-color-text-primary);font-weight:500}
+.lang-item.sel .check{display:inline-flex}
+.install-note{
+  display:none;align-items:center;gap:8px;
+  margin:0 16px 10px;padding:10px 12px;
+  border:1px solid var(--kimi-color-border);border-radius:12px;
+  background:var(--kimi-color-surface-muted);
+  font-size:11px;line-height:1.4;color:var(--kimi-color-text-secondary);
+}
+.install-note.show{display:flex;animation:fadeIn var(--t-fast) var(--ease-standard)}
+.install-note p{flex:1}
+.install-note button{
+  min-width:44px;min-height:44px;margin:-10px -12px -10px 0;
+  padding:0 12px;color:var(--kimi-color-text-tertiary);
+  font-size:11px;display:flex;align-items:center;border-radius:12px;
+}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="screens">
+    <!-- ============ HOME ============ -->
+    <section class="screen active" id="screen-home">
+      <div class="page">
+        <header class="home-header">
+          <h1>Lifeline</h1>
+          <div class="header-chips">
+            <span class="chip">Offline-ready · 104 languages</span>
+            <button class="chip" id="lang-chip" type="button">EN ▾</button>
+            <span class="chip chip-black" id="premium-chip">Premium</span>
+          </div>
+        </header>
+        <p class="lang-status" id="lang-status">Language set — full voice pack downloads in the installed app</p>
+
+        <div class="sos-bar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <p id="alert-text">No active alerts near you</p>
+          <button class="sos-btn" id="sos-btn" type="button">SOS</button>
+        </div>
+        <div class="sos-panel" id="sos-panel">
+          <div class="sos-panel-inner">
+            <button class="btn-solid-danger" id="sos-send" type="button">Send SOS with my location</button>
+            <button class="btn-outline" id="sos-safe" type="button">I'm safe — notify family</button>
+            <p class="sos-confirm" id="sos-confirm">Sent via mesh + satellite. 3 nearby users and your family were notified.</p>
+          </div>
+        </div>
+        <p class="sponsor-line" id="sponsor-sos">Sponsored: RedCross supplies — supports free SOS worldwide</p>
+
+        <button class="hold-btn" id="hold-btn" type="button">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span id="hold-label">Hold to speak — any of 104 languages</span>
+        </button>
+        <p class="listening-text" id="listening-text">Listening… (release to send)</p>
+        <p class="hold-hint" id="hold-hint">Press and hold for 300 ms to talk in any language</p>
+        <p class="sponsor-line" id="sponsor-speak">Sponsored: GlobalTel SIM — free tier keeps translating</p>
+
+        <div class="result-card" id="result-card">
+          <p class="result-quote">Where is clean water near me?</p>
+          <p class="result-reply">3 verified water points near you — closest 400m.</p>
+          <button class="btn-black" id="show-map" type="button">Show on map</button>
+        </div>
+
+        <div class="premium-card">
+          <p class="premium-title">Lifeline premium</p>
+          <div class="seg" id="billing-seg">
+            <button type="button" id="bill-monthly">Monthly · $4/mo</button>
+            <button type="button" id="bill-annual" class="active">Annual · $25/yr</button>
+          </div>
+          <p class="premium-note">billed once a year — cancel anytime</p>
+          <p class="premium-note">Automatic regional pricing: $1/mo where $4 would be out of reach — you are never priced out of help.</p>
+          <button class="btn-black" id="go-premium" type="button">Go premium</button>
+        </div>
+
+        <div class="rewarded-wrap" id="rewarded-wrap">
+          <div class="rewarded" id="rewarded-box">
+            <p>Watch a 15s ad → unlock offline map pack for 24h</p>
+            <button class="btn-black" id="watch-btn" type="button">Watch</button>
+          </div>
+          <p class="rewarded-confirm" id="rewarded-confirm">Map pack unlocked for 24h.</p>
+        </div>
+
+        <div class="tiles" id="tiles">
+          <button class="tile" id="tile-translate" type="button" data-detail="Two-way voice translation across 104 languages — works fully offline." data-ad="GlobalTel eSIM — $2 for 30 days in 90 countries">
+            <span class="badge badge-ads">Free · ads</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
+            <span class="tile-name" id="name-translate">Translate</span>
+            <span class="tile-sub">104 languages · offline</span>
+          </button>
+          <button class="tile" id="tile-health" type="button" data-detail="Step-by-step first aid guidance — one short ad per session." data-ad="SafeBirth kit — $4">
+            <span class="badge badge-ads">Free · ads</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>
+            <span class="tile-name" id="name-health">Health</span>
+            <span class="tile-sub">First aid · 1 ad/session</span>
+          </button>
+          <button class="tile" id="tile-food" type="button" data-detail="Verified clean water and food sources near you, cached for offline use." data-ad="AquaPure sachets — purifies 10L per packet">
+            <span class="badge badge-ads">Free · ads</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            <span class="tile-name" id="name-food">Food &amp; water</span>
+            <span class="tile-sub">Verified sources · offline</span>
+          </button>
+          <button class="tile" id="tile-concierge" type="button" data-detail="Real humans on standby — reachable by satellite even when networks are down.">
+            <span class="badge badge-premium">Premium</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/></svg>
+            <span class="tile-name" id="name-concierge">Concierge</span>
+            <span class="tile-sub">Human help via satellite</span>
+          </button>
+        </div>
+        <p class="tile-detail" id="tile-detail"></p>
+        <div class="tile-ad" id="tile-ad"></div>
+
+        <p class="b2b-line">Lifeline Partners: governments &amp; NGOs fund deployment — this is why the app stays free.</p>
+
+        <footer class="status-footer">
+          <span class="status-item"><span class="dot"></span>Mesh: 3 people nearby</span>
+          <span class="status-item"><span class="dot"></span>Satellite linked</span>
+          <span class="status-item">No account · 18 MB · 104 languages</span>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ============ MAP ============ -->
+    <section class="screen" id="screen-map">
+      <div class="page">
+        <h2 class="page-title">Food &amp; water map</h2>
+        <div class="map-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+          <div class="map-info">
+            <p class="map-name">Clean water point</p>
+            <p class="map-meta">400m</p>
+          </div>
+          <span class="chip map-chip" style="color:var(--kimi-color-positive)">verified</span>
+        </div>
+        <div class="map-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+          <div class="map-info">
+            <p class="map-name">Food distribution</p>
+            <p class="map-meta">1.2km</p>
+          </div>
+          <span class="chip map-chip" style="color:var(--kimi-color-positive)">open now</span>
+        </div>
+        <div class="map-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+          <div class="map-info">
+            <p class="map-name">Emergency shelter</p>
+            <p class="map-meta">2.1km</p>
+          </div>
+          <span class="chip map-chip">30 beds free</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WORKSHOP ============ -->
+    <section class="screen" id="screen-workshop">
+      <div class="page">
+        <!-- ============ LIBRARY ============ -->
+        <div id="ws-lib">
+          <h2 class="ws-header">Learning by doing with camera</h2>
+          <input class="ws-search" id="ws-search" type="search" placeholder="Search tutorials" autocomplete="off">
+          <div class="ws-chips" id="ws-chips">
+            <button class="ws-chip on" type="button" data-cat="all">All</button>
+            <button class="ws-chip" type="button" data-cat="Repair">Repair</button>
+            <button class="ws-chip" type="button" data-cat="Health">Health</button>
+            <button class="ws-chip" type="button" data-cat="Farming">Farming</button>
+            <button class="ws-chip" type="button" data-cat="Cooking">Cooking</button>
+          </div>
+          <div class="lib-list" id="lib-list"></div>
+        </div>
+
+        <!-- ============ GUIDE ============ -->
+        <div id="ws-guide" style="display:none">
+          <button class="guide-back" id="guide-back" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <span id="guide-back-label">Library</span>
+          </button>
+
+        <div class="ws-card">
+          <div class="ws-card-head">
+            <span class="badge badge-ads">Free · ads</span>
+            <h3>Scan to learn</h3>
+          </div>
+          <p class="ws-title" id="ws-title">Repair bike brake — Step 1/4: Identify the cable</p>
+          <div class="viewfinder" id="viewfinder">
+            <video class="vf-video" id="vf-video" autoplay playsinline muted></video>
+            <svg id="vf-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span id="vf-text">Camera preview — simulated in this demo</span>
+          </div>
+          <div class="shutter-row" id="shutter-row">
+            <button class="shutter" id="shutter-btn" type="button" aria-label="Capture step photo"><span></span></button>
+          </div>
+          <div class="ws-thumbs" id="ws-thumbs"></div>
+          <p class="ws-hint" id="ws-hint">the cable runs from lever to brake arm</p>
+          <div class="dots" id="ws-dots">
+            <span class="dot-p on"></span><span class="dot-p"></span><span class="dot-p"></span><span class="dot-p"></span>
+          </div>
+          <button class="btn-black" id="ws-btn" type="button">Open camera</button>
+          <p class="ws-done" id="ws-done">Done — brake repaired. Photo steps saved to your library.</p>
+        </div>
+
+        </div>
+
+        <div class="ws-card teach-card">
+          <h3 style="font-size:14px;font-weight:600;margin-bottom:8px">Teach what you know</h3>
+          <p>Record your own step-by-step tutorial — others on the mesh learn it offline.</p>
+          <button class="btn-black" id="teach-btn" type="button">Record tutorial (simulated)</button>
+          <p class="ws-done" id="teach-done">Recording saved — 4 photo steps · shared to 3 nearby users over mesh.</p>
+          <p class="ws-bottom" style="margin-top:10px">Community tutorials are verified by 3 local users before going wide.</p>
+        </div>
+
+        <p class="sponsor-line" id="sponsor-workshop">Sponsored: ToolShare kit — $12 basic repair set, relief-zone pricing</p>
+        <p class="ws-bottom">AI guide works offline • Photo steps saved</p>
+        <p class="ws-bottom">Camera requires permission — allow when prompted, or the app falls back to simulation.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ INSTALL NOTE (once-only) ============ -->
+  <div class="install-note" id="install-note">
+    <p>Install Lifeline — works offline</p>
+    <button id="install-dismiss" type="button">Dismiss</button>
+  </div>
+
+  <!-- ============ TAB BAR ============ -->
+  <nav class="tabbar" id="tabbar">
+    <button class="tab active" id="tab-home" type="button" data-tab="home">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+      <span id="tab-home-label">Home</span>
+    </button>
+    <button class="tab" id="tab-map" type="button" data-tab="map">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span id="tab-map-label">Map</span>
+    </button>
+    <button class="tab" id="tab-workshop" type="button" data-tab="workshop">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      <span id="tab-workshop-label">Workshop</span>
+    </button>
+  </nav>
+
+  <!-- ============ LANGUAGE SHEET ============ -->
+  <div class="sheet-overlay" id="sheet-overlay">
+    <div class="sheet" id="sheet" role="dialog" aria-label="Choose your language">
+      <div class="sheet-head">
+        <h3>Choose your language · 104 available</h3>
+        <button class="sheet-close" id="sheet-close" type="button" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <input class="lang-search" id="lang-search" type="search" placeholder="Search languages" autocomplete="off">
+      <div class="lang-grid" id="lang-grid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var LANG_LIST=[
+  {n:"English",s:"EN"},
+  {n:"简体中文",s:"简体中文"},
+  {n:"Español",s:"ES"},
+  {n:"हिन्दी",s:"हिन्दी"},
+  {n:"العربية",s:"العربية"},
+  {n:"Português",s:"PT"},
+  {n:"বাংলা",s:"বাংলা"},
+  {n:"Русский",s:"Русский"},
+  {n:"日本語",s:"日本語"},
+  {n:"Français",s:"FR"},
+  {n:"Deutsch",s:"DE"},
+  {n:"한국어",s:"한국어"},
+  {n:"Italiano",s:"IT"},
+  {n:"Türkçe",s:"TR"},
+  {n:"Tiếng Việt",s:"VI"},
+  {n:"فارسی",s:"فارسی"},
+  {n:"Polski",s:"PL"},
+  {n:"Українська",s:"Українська"},
+  {n:"اردو",s:"اردو"},
+  {n:"Bahasa Indonesia",s:"ID"},
+  {n:"Bahasa Melayu",s:"MS"},
+  {n:"తెలుగు",s:"తెలుగు"},
+  {n:"मराठी",s:"मराठी"},
+  {n:"தமிழ்",s:"தமிழ்"},
+  {n:"ગુજરાતી",s:"ગુજરાતી"},
+  {n:"ಕನ್ನಡ",s:"ಕನ್ನಡ"},
+  {n:"മലയാളം",s:"മലയാളം"},
+  {n:"ଓଡ଼ିଆ",s:"ଓଡ଼ିଆ"},
+  {n:"ਪੰਜਾਬੀ",s:"ਪੰਜਾਬੀ"},
+  {n:"မြန်မာဘာသာ",s:"မြန်မာဘာသာ"},
+  {n:"Kiswahili",s:"SW"},
+  {n:"Basa Jawa",s:"JV"},
+  {n:"Hausa",s:"HA"},
+  {n:"Yorùbá",s:"YO"},
+  {n:"Igbo",s:"IG"},
+  {n:"አማርኛ",s:"አማርኛ"},
+  {n:"Af-Soomaali",s:"SO"},
+  {n:"isiZulu",s:"ZU"},
+  {n:"isiXhosa",s:"XH"},
+  {n:"chiShona",s:"SN"},
+  {n:"Twi",s:"TW"},
+  {n:"Lingála",s:"LN"},
+  {n:"Wolof",s:"WO"},
+  {n:"Fulfulde",s:"FF"},
+  {n:"Kinyarwanda",s:"RW"},
+  {n:"ትግርኛ",s:"ትግርኛ"},
+  {n:"Afaan Oromoo",s:"OM"},
+  {n:"Malagasy",s:"MG"},
+  {n:"Sesotho",s:"ST"},
+  {n:"Maltese",s:"MT"},
+  {n:"Afrikaans",s:"AF"},
+  {n:"Cebuano",s:"CE"},
+  {n:"Tagalog",s:"TL"},
+  {n:"Ilokano",s:"IL"},
+  {n:"閩南語",s:"閩南語"},
+  {n:"粵語",s:"粵語"},
+  {n:"עברית",s:"עברית"},
+  {n:"Nederlands",s:"NL"},
+  {n:"Svenska",s:"SV"},
+  {n:"Norsk",s:"NO"},
+  {n:"Dansk",s:"DA"},
+  {n:"Suomi",s:"FI"},
+  {n:"Íslenska",s:"IS"},
+  {n:"Čeština",s:"CS"},
+  {n:"Slovenčina",s:"SK"},
+  {n:"Slovenščina",s:"SL"},
+  {n:"Hrvatski",s:"HR"},
+  {n:"Српски",s:"Српски"},
+  {n:"Bosanski",s:"BS"},
+  {n:"Shqip",s:"SQ"},
+  {n:"Македонски",s:"Македонски"},
+  {n:"Български",s:"Български"},
+  {n:"Română",s:"RO"},
+  {n:"Magyar",s:"HU"},
+  {n:"Ελληνικά",s:"Ελληνικά"},
+  {n:"Eesti",s:"ET"},
+  {n:"Latviešu",s:"LV"},
+  {n:"Lietuvių",s:"LT"},
+  {n:"Català",s:"CA"},
+  {n:"Euskara",s:"EU"},
+  {n:"Galego",s:"GL"},
+  {n:"Հայերեն",s:"Հայերեն"},
+  {n:"ქართული",s:"ქართული"},
+  {n:"Azərbaycanca",s:"AZ"},
+  {n:"Қазақша",s:"Қазақша"},
+  {n:"Oʻzbekcha",s:"UZ"},
+  {n:"Кыргызча",s:"Кыргызча"},
+  {n:"Türkmençe",s:"TK"},
+  {n:"Тоҷикӣ",s:"Тоҷикӣ"},
+  {n:"Монгол хэл",s:"Монгол хэл"},
+  {n:"नेपाली",s:"नेपाली"},
+  {n:"සිංහල",s:"සිංහල"},
+  {n:"ދިވެހި",s:"ދިވެހި"},
+  {n:"پښتو",s:"پښتو"},
+  {n:"دری",s:"دری"},
+  {n:"کوردی",s:"کوردی"},
+  {n:"سنڌي",s:"سنڌي"},
+  {n:"کٲشُر",s:"کٲشُر"},
+  {n:"कोंकणी",s:"कोंकणी"},
+  {n:"অসমীয়া",s:"অসমীয়া"},
+  {n:"मैथिली",s:"मैथिली"},
+  {n:"संताली",s:"संताली"},
+  {n:"Bodo",s:"BD"},
+  {n:"Dogri",s:"DG"}
+];
+
+  function switchTab(name){
+    var tabs = document.querySelectorAll(".tab");
+    if(tabs && tabs.length){ for(var i=0;i<tabs.length;i++){ tabs[i].classList.toggle("active", tabs[i].getAttribute("data-tab")===name); } }
+    var screens = document.querySelectorAll(".screen");
+    if(screens && screens.length){ for(var j=0;j<screens.length;j++){ screens[j].classList.toggle("active", screens[j].id==="screen-"+name); } }
+    var sc = document.querySelector(".screens");
+    if(sc){ sc.scrollTop = 0; }
+  }
+
+  function init(){
+    /* tab bar */
+    var tabbar = document.getElementById("tabbar");
+    if(tabbar && !tabbar.getAttribute("data-bound")){
+      tabbar.setAttribute("data-bound","1");
+      tabbar.addEventListener("click", function(e){
+        var t = e.target && e.target.closest ? e.target.closest(".tab") : null;
+        if(t){ switchTab(t.getAttribute("data-tab")); }
+      });
+    }
+
+    /* SOS */
+    var sosBtn = document.getElementById("sos-btn");
+    if(sosBtn && !sosBtn.getAttribute("data-bound")){
+      sosBtn.setAttribute("data-bound","1");
+      sosBtn.addEventListener("click", function(){
+        var p = document.getElementById("sos-panel");
+        if(p){ p.classList.toggle("open"); }
+      });
+    }
+    function bindSosAction(id){
+      var el = document.getElementById(id);
+      if(el && !el.getAttribute("data-bound")){
+        el.setAttribute("data-bound","1");
+        el.addEventListener("click", function(){
+          var c = document.getElementById("sos-confirm");
+          if(c){ c.classList.add("show"); }
+        });
+      }
+    }
+    bindSosAction("sos-send");
+    bindSosAction("sos-safe");
+
+    /* hold to speak */
+    var holdBtn = document.getElementById("hold-btn");
+    if(holdBtn && !holdBtn.getAttribute("data-bound")){
+      holdBtn.setAttribute("data-bound","1");
+      var holdTimer = null, listening = false;
+      function startListen(){
+        var lt = document.getElementById("listening-text");
+        if(lt){ lt.classList.add("show"); }
+        var hh = document.getElementById("hold-hint");
+        if(hh){ hh.classList.add("hide"); }
+      }
+      function stopListen(){
+        var lt = document.getElementById("listening-text");
+        if(lt){ lt.classList.remove("show"); }
+        var hh = document.getElementById("hold-hint");
+        if(hh){ hh.classList.remove("hide"); }
+      }
+      holdBtn.addEventListener("pointerdown", function(e){
+        if(e && e.preventDefault){ e.preventDefault(); }
+        listening = false;
+        holdTimer = setTimeout(function(){ listening = true; startListen(); }, 300);
+      });
+      function endHold(){
+        if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
+        if(listening){
+          listening = false;
+          stopListen();
+          var rc = document.getElementById("result-card");
+          if(rc){ rc.classList.add("show"); }
+        }
+      }
+      holdBtn.addEventListener("pointerup", endHold);
+      holdBtn.addEventListener("pointercancel", endHold);
+      holdBtn.addEventListener("pointerleave", endHold);
+      holdBtn.addEventListener("contextmenu", function(e){ if(e && e.preventDefault){ e.preventDefault(); } });
+    }
+    var showMap = document.getElementById("show-map");
+    if(showMap && !showMap.getAttribute("data-bound")){
+      showMap.setAttribute("data-bound","1");
+      showMap.addEventListener("click", function(){ switchTab("map"); });
+    }
+
+    /* premium */
+    var billM = document.getElementById("bill-monthly");
+    var billA = document.getElementById("bill-annual");
+    if(billM && !billM.getAttribute("data-bound")){
+      billM.setAttribute("data-bound","1");
+      billM.addEventListener("click", function(){
+        billM.classList.add("active");
+        if(billA){ billA.classList.remove("active"); }
+      });
+    }
+    if(billA && !billA.getAttribute("data-bound")){
+      billA.setAttribute("data-bound","1");
+      billA.addEventListener("click", function(){
+        billA.classList.add("active");
+        if(billM){ billM.classList.remove("active"); }
+      });
+    }
+    var premium = false;
+    function setPremium(on){
+      premium = !!on;
+      var phone = document.querySelector(".phone");
+      if(phone){ phone.classList.toggle("premium", premium); }
+      var chip = document.getElementById("premium-chip");
+      if(chip){ chip.classList.toggle("show", premium); }
+      var gp = document.getElementById("go-premium");
+      if(gp){
+        gp.textContent = premium ? tFor("active") : tFor("go");
+        gp.style.opacity = premium ? ".75" : "";
+      }
+      var freeBadges = document.querySelectorAll("#tile-translate .badge, #tile-health .badge, #tile-food .badge");
+      if(freeBadges && freeBadges.length){
+        for(var b=0;b<freeBadges.length;b++){
+          freeBadges[b].textContent = premium ? "Premium — ad-free" : "Free · ads";
+          freeBadges[b].classList.toggle("badge-premium", premium);
+          freeBadges[b].classList.toggle("badge-ads", !premium);
+        }
+      }
+      if(premium){
+        var adBox = document.getElementById("tile-ad");
+        if(adBox){ adBox.classList.remove("show"); }
+      }
+    }
+    var goPremium = document.getElementById("go-premium");
+    if(goPremium && !goPremium.getAttribute("data-bound")){
+      goPremium.setAttribute("data-bound","1");
+      goPremium.addEventListener("click", function(){ setPremium(!premium); });
+    }
+
+    var watchBtn = document.getElementById("watch-btn");
+    if(watchBtn && !watchBtn.getAttribute("data-bound")){
+      watchBtn.setAttribute("data-bound","1");
+      watchBtn.addEventListener("click", function(){
+        var c = document.getElementById("rewarded-confirm");
+        if(c){ c.classList.add("show"); }
+      });
+    }
+
+    /* workshop step flow + real camera (always user-gesture triggered) */
+    var videoEl = document.getElementById("vf-video");
+    var camStream = null, camLive = false, shots = 0;
+    function camFail(msg){
+      var t = document.getElementById("vf-text");
+      if(t){ t.textContent = msg; }
+      var i = document.getElementById("vf-icon");
+      if(i){ i.style.display = ""; }
+      var v = document.getElementById("vf-video");
+      if(v){ v.classList.remove("live"); }
+      var s = document.getElementById("shutter-row");
+      if(s){ s.classList.remove("show"); }
+      camLive = false; camStream = null;
+    }
+    function stopCam(){
+      if(videoEl && videoEl.srcObject){
+        try{ videoEl.srcObject.getTracks().forEach(function(t){ t.stop(); }); }catch(err){}
+        videoEl.srcObject = null;
+      }
+      camStream = null; camLive = false;
+      if(videoEl){ videoEl.classList.remove("live"); }
+      var s = document.getElementById("shutter-row");
+      if(s){ s.classList.remove("show"); }
+    }
+    function openCamera(){
+      if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+        camFail("No camera found");
+        return;
+      }
+      try{
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+          .then(function(stream){
+            camStream = stream;
+            if(videoEl){
+              videoEl.srcObject = stream;
+              videoEl.classList.add("live");
+              var p = videoEl.play ? videoEl.play() : null;
+              if(p && p.catch){ p.catch(function(){}); }
+            }
+            var i = document.getElementById("vf-icon");
+            if(i){ i.style.display = "none"; }
+            var t = document.getElementById("vf-text");
+            if(t){ t.textContent = ""; }
+            var s = document.getElementById("shutter-row");
+            if(s){ s.classList.add("show"); }
+            camLive = true;
+          })
+          .catch(function(err){
+            var name = err && err.name ? err.name : "";
+            if(name === "NotAllowedError" || name === "SecurityError"){
+              camFail("Camera blocked — allow it in your browser's site settings and try again");
+            } else if(name === "NotFoundError" || name === "OverconstrainedError" || name === "DevicesNotFoundError"){
+              camFail("No camera found");
+            } else {
+              camFail("Camera preview — simulated in this demo");
+            }
+          });
+      }catch(e){
+        camFail("Camera preview — simulated in this demo");
+      }
+    }
+    function captureStep(){
+      if(!camLive || !videoEl || !videoEl.videoWidth){ return; }
+      var c = document.createElement("canvas");
+      c.width = videoEl.videoWidth;
+      c.height = videoEl.videoHeight;
+      try{
+        c.getContext("2d").drawImage(videoEl, 0, 0, c.width, c.height);
+      }catch(err){ return; }
+      var wrap = document.getElementById("ws-thumbs");
+      if(!wrap){ return; }
+      if(!wrap.classList.contains("show")){
+        wrap.innerHTML = "";
+        wrap.classList.add("show");
+        shots = 0;
+      }
+      shots += 1;
+      var th = document.createElement("div");
+      th.className = "ws-thumb";
+      th.appendChild(c);
+      var lb = document.createElement("span");
+      lb.textContent = "Step " + shots;
+      th.appendChild(lb);
+      wrap.appendChild(th);
+    }
+    var shutterBtn = document.getElementById("shutter-btn");
+    if(shutterBtn && !shutterBtn.getAttribute("data-bound")){
+      shutterBtn.setAttribute("data-bound","1");
+      shutterBtn.addEventListener("click", captureStep);
+    }
+    /* tutorial library data */
+    var TUTS = [
+      { title:"Repair bike brake", category:"Repair", badge:"verified", langs:2, steps:[
+        { title:"Identify the cable", hint:"the cable runs from lever to brake arm" },
+        { title:"Check cable tension", hint:"lever should firm up within 2cm" },
+        { title:"Adjust the barrel", hint:"turn counter-clockwise to tighten" },
+        { title:"Test the brake", hint:"wheel stops instantly, no rubbing" }
+      ]},
+      { title:"Fix a leaking pipe", category:"Repair", badge:"community", langs:1, steps:[
+        { title:"Shut off water", hint:"main valve, usually near the meter" },
+        { title:"Dry the pipe", hint:"wipe 10cm around the leak" },
+        { title:"Apply epoxy putty", hint:"knead until uniform color" },
+        { title:"Wrap tightly", hint:"rubber strip, overlapping layers" },
+        { title:"Wait 1 hour", hint:"test with a dry tissue" }
+      ]},
+      { title:"Treat a burn", category:"Health", badge:"verified", langs:3, steps:[
+        { title:"Cool with water", hint:"10 minutes, no ice" },
+        { title:"Cover loosely", hint:"clean cloth, no cotton wool" },
+        { title:"Never burst blisters", hint:"see a doctor if larger than your palm" }
+      ]},
+      { title:"Purify well water", category:"Health", badge:"verified", langs:2, steps:[
+        { title:"Add one sachet", hint:"per 10 liters" },
+        { title:"Stir 5 minutes", hint:"until flakes form" },
+        { title:"Wait 20 minutes", hint:"settle undisturbed" },
+        { title:"Pour through cloth", hint:"clear water only" }
+      ]},
+      { title:"Build a drip line", category:"Farming", badge:"community", langs:1, steps:[
+        { title:"Lay main hose", hint:"along the crop row" },
+        { title:"Punch holes", hint:"every 30cm" },
+        { title:"Insert drippers", hint:"push until snug" },
+        { title:"Connect to tank", hint:"use the lower outlet" },
+        { title:"Test flow", hint:"each dripper should tick" },
+        { title:"Cover with mulch", hint:"keeps lines cool" }
+      ]},
+      { title:"Cook beans safely", category:"Cooking", badge:"community", langs:2, steps:[
+        { title:"Soak overnight", hint:"at least 8 hours" },
+        { title:"Boil hard 10 min", hint:"never slow-cook raw beans" },
+        { title:"Simmer until soft", hint:"low heat, lid on" }
+      ]}
+    ];
+    var curTut = TUTS[0], wsStep = 0, wsFinished = false;
+    var curCat = "all";
+    function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+    function renderLib(){
+      var list = document.getElementById("lib-list");
+      if(!list){ return; }
+      var q = "";
+      var si = document.getElementById("ws-search");
+      if(si){ q = (si.value || "").toLowerCase(); }
+      var html = "";
+      for(var i=0;i<TUTS.length;i++){
+        var t = TUTS[i];
+        if(curCat !== "all" && t.category !== curCat){ continue; }
+        if(q && t.title.toLowerCase().indexOf(q) === -1){ continue; }
+        var badgeClass = t.badge === "verified" ? "badge-ads" : "badge-premium";
+        html += '<button type="button" class="lib-card" data-idx="'+i+'">'
+              + '<div class="lib-info">'
+              + '<p class="lib-title">' + esc(t.title) + '</p>'
+              + '<p class="lib-meta"><span class="cat-tag">' + esc(t.category) + '</span> · ' + t.steps.length + ' steps · ' + t.langs + ' languages</p>'
+              + '</div>'
+              + '<span class="badge ' + badgeClass + '">' + t.badge + '</span>'
+              + '</button>';
+      }
+      list.innerHTML = html;
+    }
+    function stepLabel(){
+      return curTut.title + " — Step " + (wsStep+1) + "/" + curTut.steps.length + ": " + curTut.steps[wsStep].title;
+    }
+    function renderDots(){
+      var wrap = document.getElementById("ws-dots");
+      if(!wrap){ return; }
+      var html = "";
+      for(var i=0;i<curTut.steps.length;i++){
+        html += '<span class="dot-p' + (i <= wsStep ? " on" : "") + '"></span>';
+      }
+      wrap.innerHTML = html;
+    }
+    function renderStep(){
+      var titleEl = document.getElementById("ws-title");
+      if(titleEl){ titleEl.textContent = stepLabel(); }
+      var hintEl = document.getElementById("ws-hint");
+      if(hintEl){
+        var h = curTut.steps[wsStep].hint || "";
+        hintEl.textContent = h;
+        hintEl.classList.toggle("show", !!h);
+      }
+      renderDots();
+      var btn = document.getElementById("ws-btn");
+      if(btn){
+        if(wsFinished){ btn.textContent = "Restart"; }
+        else if(wsStep >= curTut.steps.length-1){ btn.textContent = "Finish"; }
+        else if(wsStep >= 1){ btn.textContent = "Next step"; }
+        else { btn.textContent = "Open camera"; }
+      }
+    }
+    function resetGuide(){
+      wsFinished = false;
+      wsStep = 0;
+      stopCam();
+      var thumbs = document.getElementById("ws-thumbs");
+      if(thumbs){ thumbs.classList.remove("show"); thumbs.innerHTML = ""; }
+      shots = 0;
+      var i = document.getElementById("vf-icon");
+      if(i){ i.style.display = ""; }
+      var t = document.getElementById("vf-text");
+      if(t){ t.textContent = "Camera preview — simulated in this demo"; }
+      var doneEl = document.getElementById("ws-done");
+      if(doneEl){ doneEl.textContent = "Done — " + curTut.title + " learned. Photo steps saved to your library."; doneEl.classList.remove("show"); }
+    }
+    function openGuide(idx){
+      curTut = TUTS[idx] || TUTS[0];
+      resetGuide();
+      renderStep();
+      var lib = document.getElementById("ws-lib");
+      if(lib){ lib.style.display = "none"; }
+      var guide = document.getElementById("ws-guide");
+      if(guide){ guide.style.display = ""; }
+    }
+    function closeGuide(){
+      stopCam();
+      var lib = document.getElementById("ws-lib");
+      if(lib){ lib.style.display = ""; }
+      var guide = document.getElementById("ws-guide");
+      if(guide){ guide.style.display = "none"; }
+      renderLib();
+    }
+    var libList = document.getElementById("lib-list");
+    if(libList && !libList.getAttribute("data-bound")){
+      libList.setAttribute("data-bound","1");
+      libList.addEventListener("click", function(e){
+        var c = e.target && e.target.closest ? e.target.closest(".lib-card") : null;
+        if(c){ openGuide(parseInt(c.getAttribute("data-idx"), 10)); }
+      });
+    }
+    var wsChips = document.getElementById("ws-chips");
+    if(wsChips && !wsChips.getAttribute("data-bound")){
+      wsChips.setAttribute("data-bound","1");
+      wsChips.addEventListener("click", function(e){
+        var ch = e.target && e.target.closest ? e.target.closest(".ws-chip") : null;
+        if(!ch){ return; }
+        curCat = ch.getAttribute("data-cat") || "all";
+        var all = wsChips.querySelectorAll(".ws-chip");
+        for(var i=0;i<all.length;i++){ all[i].classList.toggle("on", all[i] === ch); }
+        renderLib();
+      });
+    }
+    var wsSearchEl = document.getElementById("ws-search");
+    if(wsSearchEl && !wsSearchEl.getAttribute("data-bound")){
+      wsSearchEl.setAttribute("data-bound","1");
+      wsSearchEl.addEventListener("input", renderLib);
+    }
+    var guideBack = document.getElementById("guide-back");
+    if(guideBack && !guideBack.getAttribute("data-bound")){
+      guideBack.setAttribute("data-bound","1");
+      guideBack.addEventListener("click", closeGuide);
+    }
+    var wsBtn = document.getElementById("ws-btn");
+    if(wsBtn && !wsBtn.getAttribute("data-bound")){
+      wsBtn.setAttribute("data-bound","1");
+      wsBtn.addEventListener("click", function(){
+        if(wsFinished){
+          resetGuide();
+          renderStep();
+        } else if(wsStep >= curTut.steps.length-1){
+          wsFinished = true;
+          stopCam();
+          var doneEl2 = document.getElementById("ws-done");
+          if(doneEl2){ doneEl2.classList.add("show"); }
+          renderStep();
+        } else {
+          if(wsStep === 0 && !camLive && !camStream){ openCamera(); }
+          wsStep += 1;
+          renderStep();
+        }
+      });
+    }
+    renderLib();
+    var teachBtn = document.getElementById("teach-btn");
+    if(teachBtn && !teachBtn.getAttribute("data-bound")){
+      teachBtn.setAttribute("data-bound","1");
+      teachBtn.addEventListener("click", function(){
+        var c = document.getElementById("teach-done");
+        if(c){ c.classList.add("show"); }
+        var now = new Date();
+        var dateStr = now.getFullYear() + "-" + String(now.getMonth()+1).padStart(2,"0") + "-" + String(now.getDate()).padStart(2,"0");
+        TUTS.unshift({
+          title: "My tutorial — " + dateStr,
+          category: "Repair",
+          badge: "community",
+          langs: 1,
+          steps: [
+            { title:"Step one", hint:"photo saved" },
+            { title:"Step two", hint:"photo saved" },
+            { title:"Step three", hint:"photo saved" },
+            { title:"Step four", hint:"photo saved" }
+          ]
+        });
+        renderLib();
+      });
+    }
+
+    /* language picker + honest-scope translations */
+    var currentLang = "English";
+    var T = {
+      "English":    { alert:"No active alerts near you", sos:"SOS", hold:"Hold to speak — any of 104 languages", home:"Home", map:"Map", workshop:"Workshop", translate:"Translate", health:"Health", food:"Food & water", concierge:"Concierge", go:"Go premium", active:"Premium active" },
+      "简体中文": { alert:"您附近没有紧急警报", sos:"SOS", hold:"按住说话 — 支持104种语言", home:"首页", map:"地图", workshop:"工坊", translate:"翻译", health:"健康", food:"食物和饮水", concierge:"礼宾服务", go:"升级 Premium", active:"Premium 已激活" },
+      "العربية": { alert:"لا توجد تنبيهات نشطة بالقرب منك", sos:"استغاثة", hold:"اضغط باستمرار للتحدث — أي من 104 لغة", home:"الرئيسية", map:"الخريطة", workshop:"الورشة", translate:"ترجمة", health:"صحة", food:"طعام وماء", concierge:"كونسيرج", go:"اشترك في بريميوم", active:"بريميوم مفعّل" },
+      "हिन्दी": { alert:"आपके पास कोई सक्रिय अलर्ट नहीं है", sos:"एसओएस", hold:"बोलने के लिए दबाए रखें — 104 भाषाओं में से कोई भी", home:"होम", map:"नक्शा", workshop:"वर्कशॉप", translate:"अनुवाद", health:"स्वास्थ्य", food:"भोजन और पानी", concierge:"कंसीयज", go:"प्रीमियम लें", active:"प्रीमियम सक्रिय" },
+      "Español":    { alert:"No hay alertas activas cerca de ti", sos:"SOS", hold:"Mantén pulsado para hablar — en 104 idiomas", home:"Inicio", map:"Mapa", workshop:"Taller", translate:"Traducir", health:"Salud", food:"Comida y agua", concierge:"Conserjería", go:"Hazte premium", active:"Premium activo" },
+      "Kiswahili":  { alert:"Hakuna tahadhari zinazotumika karibu nawe", sos:"SOS", hold:"Shika ili kuzungumza — lugha 104 zozote", home:"Nyumbani", map:"Ramani", workshop:"Warsha", translate:"Tafsiri", health:"Afya", food:"Chakula na maji", concierge:"Konsheji", go:"Nunua premium", active:"Premium inatumika" }
+    };
+    function tFor(key){
+      var d = T[currentLang] || T["English"];
+      return d[key] || T["English"][key];
+    }
+    function applyLang(){
+      var pairs = [
+        ["alert-text","alert"], ["sos-btn","sos"], ["hold-label","hold"],
+        ["tab-home-label","home"], ["tab-map-label","map"], ["tab-workshop-label","workshop"],
+        ["name-translate","translate"], ["name-health","health"], ["name-food","food"], ["name-concierge","concierge"]
+      ];
+      for(var i=0;i<pairs.length;i++){
+        var el = document.getElementById(pairs[i][0]);
+        if(el){ el.textContent = tFor(pairs[i][1]); }
+      }
+      var gp = document.getElementById("go-premium");
+      if(gp){ gp.textContent = premium ? tFor("active") : tFor("go"); }
+    }
+    function renderLangGrid(filter){
+      var grid = document.getElementById("lang-grid");
+      if(!grid){ return; }
+      var q = (filter || "").toLowerCase();
+      var html = "";
+      for(var i=0;i<LANG_LIST.length;i++){
+        var L = LANG_LIST[i];
+        if(q && L.n.toLowerCase().indexOf(q) === -1){ continue; }
+        var sel = (L.n === currentLang) ? " sel" : "";
+        html += '<button type="button" class="lang-item' + sel + '" data-lang="' + L.n.replace(/"/g,"&quot;") + '">'
+              + '<span>' + L.n + '</span>'
+              + '<span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>'
+              + '</button>';
+      }
+      grid.innerHTML = html;
+    }
+    function openSheet(){
+      renderLangGrid("");
+      var s = document.getElementById("lang-search");
+      if(s){ s.value = ""; }
+      var o = document.getElementById("sheet-overlay");
+      if(o){ o.classList.add("open"); }
+    }
+    function closeSheet(){
+      var o = document.getElementById("sheet-overlay");
+      if(o){ o.classList.remove("open"); }
+    }
+    function shortLabel(name){
+      for(var i=0;i<LANG_LIST.length;i++){
+        if(LANG_LIST[i].n === name){ return LANG_LIST[i].s; }
+      }
+      return name;
+    }
+    function selectLang(name){
+      currentLang = name;
+      var chip = document.getElementById("lang-chip");
+      if(chip){ chip.textContent = shortLabel(name) + " ▾"; }
+      var st = document.getElementById("lang-status");
+      if(st){ st.classList.add("show"); }
+      applyLang();
+      closeSheet();
+    }
+    var langChip = document.getElementById("lang-chip");
+    if(langChip && !langChip.getAttribute("data-bound")){
+      langChip.setAttribute("data-bound","1");
+      langChip.addEventListener("click", openSheet);
+    }
+    var sheetClose = document.getElementById("sheet-close");
+    if(sheetClose && !sheetClose.getAttribute("data-bound")){
+      sheetClose.setAttribute("data-bound","1");
+      sheetClose.addEventListener("click", closeSheet);
+    }
+    var sheetOverlay = document.getElementById("sheet-overlay");
+    if(sheetOverlay && !sheetOverlay.getAttribute("data-bound")){
+      sheetOverlay.setAttribute("data-bound","1");
+      sheetOverlay.addEventListener("click", function(e){
+        if(e.target === sheetOverlay){ closeSheet(); }
+      });
+    }
+    var langSearch = document.getElementById("lang-search");
+    if(langSearch && !langSearch.getAttribute("data-bound")){
+      langSearch.setAttribute("data-bound","1");
+      langSearch.addEventListener("input", function(){
+        renderLangGrid(langSearch.value || "");
+      });
+    }
+    var langGrid = document.getElementById("lang-grid");
+    if(langGrid && !langGrid.getAttribute("data-bound")){
+      langGrid.setAttribute("data-bound","1");
+      langGrid.addEventListener("click", function(e){
+        var it = e.target && e.target.closest ? e.target.closest(".lang-item") : null;
+        if(it){ selectLang(it.getAttribute("data-lang")); }
+      });
+    }
+    renderLangGrid("");
+
+    /* tiles */
+    var tiles = document.getElementById("tiles");
+    var detail = document.getElementById("tile-detail");
+    if(tiles && !tiles.getAttribute("data-bound")){
+      tiles.setAttribute("data-bound","1");
+      tiles.addEventListener("click", function(e){
+        var t = e.target && e.target.closest ? e.target.closest(".tile") : null;
+        if(!t){ return; }
+        var all = tiles.querySelectorAll(".tile");
+        for(var i=0;i<all.length;i++){ all[i].classList.remove("on"); }
+        t.classList.add("on");
+        if(detail){ detail.textContent = t.getAttribute("data-detail") || ""; detail.classList.add("show"); }
+        var adBox = document.getElementById("tile-ad");
+        if(adBox){
+          var adText = t.getAttribute("data-ad") || "";
+          if(premium || !adText){
+            adBox.classList.remove("show");
+          } else {
+            adBox.textContent = adText;
+            adBox.classList.add("show");
+          }
+        }
+      });
+    }
+    renderLangGrid("");
+
+    /* install note (once-only, dismissible) */
+    var note = document.getElementById("install-note");
+    var dismissed = false;
+    try{ dismissed = localStorage.getItem("lifeline_install_dismissed") === "1"; }catch(err){}
+    if(note && !dismissed){ note.classList.add("show"); }
+    var dismissBtn = document.getElementById("install-dismiss");
+    if(dismissBtn && !dismissBtn.getAttribute("data-bound")){
+      dismissBtn.setAttribute("data-bound","1");
+      dismissBtn.addEventListener("click", function(){
+        var n = document.getElementById("install-note");
+        if(n){ n.classList.remove("show"); }
+        try{ localStorage.setItem("lifeline_install_dismissed","1"); }catch(err){}
+      });
+    }
+  }
+
+  function registerSW(){
+    if("serviceWorker" in navigator){
+      navigator.serviceWorker.register("sw.js").catch(function(){});
+    }
+  }
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", registerSW);
+  } else {
+    registerSW();
+  }
+
+  window.__lifelineInit = init;
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
